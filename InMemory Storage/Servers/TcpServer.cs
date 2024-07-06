@@ -12,11 +12,11 @@ namespace InMemory_Storage.Server
         public TcpServer(ILogger<TcpServer> logger, IOptions<TcpServerSettings> settings)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
             if (settings?.Value == null || string.IsNullOrWhiteSpace(settings.Value.Address))
             {
                 throw new ArgumentNullException(nameof(settings), ErrorMessages.TcpSettingNull);
             }
-
             if (settings.Value.Port <= 0 || settings.Value.Port > 65535)
             {
                 throw new ArgumentOutOfRangeException(nameof(settings.Value.Port), ErrorMessages.TcpPortInvalid);
