@@ -23,20 +23,39 @@ namespace InMemory_Storage.Server
             }
 
             Listener = new TcpListener(IPAddress.Parse(settings.Value.Address), settings.Value.Port);
+            CancellationTokenSource = new CancellationTokenSource();
 
         }
 
         private readonly ILogger<TcpServer> Logger;
         private readonly TcpListener Listener;
+        private readonly CancellationTokenSource CancellationTokenSource;
 
         public void Start()
         {
-            throw new NotImplementedException();
+            Listener.Start();
+            Logger.LogInformation("TCP listener {address} started at: {time}", Listener.LocalEndpoint ,DateTimeOffset.Now);
+            AcceptClientAsync(CancellationTokenSource.Token);
         }
         public void Stop()
         {
-            throw new NotImplementedException();
+            Listener.Stop();
+            CancellationTokenSource.Cancel();
+            Logger.LogInformation("TCP listener {address} stopped at: {time}", Listener.LocalEndpoint, DateTimeOffset.Now);
         }
 
+        public async void AcceptClientAsync(CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                using var client = await Listener.AcceptTcpClientAsync();
+                _ = Task.Run(() => HandleClientAsync(client, cancellationToken));
+            }
+        }
+
+        public async Task HandleClientAsync(TcpClient client, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
