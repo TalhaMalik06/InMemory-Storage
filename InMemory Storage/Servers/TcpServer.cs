@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace InMemory_Storage.Server
 {
@@ -39,23 +40,61 @@ namespace InMemory_Storage.Server
         }
         public void Stop()
         {
-            Listener.Stop();
             CancellationTokenSource.Cancel();
+            Listener.Stop();
             Logger.LogInformation("TCP listener {address} stopped at: {time}", Listener.LocalEndpoint, DateTimeOffset.Now);
         }
 
         public async void AcceptClientAsync(CancellationToken cancellationToken)
         {
-            while (true)
+            try
             {
-                using var client = await Listener.AcceptTcpClientAsync();
-                _ = Task.Run(() => HandleClientAsync(client, cancellationToken));
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    var client = await Listener.AcceptTcpClientAsync();
+                    _ = Task.Run(() => HandleClientAsync(client, cancellationToken), cancellationToken);
+                }
             }
+            catch (ObjectDisposedException)
+            {
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ErrorMessages.ErrorAcceptingClient);
+            }
+            
         }
 
         public async Task HandleClientAsync(TcpClient client, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var buffer = new byte[1024];
+                var stream = client.GetStream();
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    var byteCount = await stream.ReadAsync(buffer, cancellationToken);
+                    if (byteCount <= 0 || cancellationToken.IsCancellationRequested) break;
+                    var request = Encoding.UTF8.GetString(buffer, 0, byteCount).Trim();
+                    var response = ProcessCommand(request);
+                    var responseBytes = Encoding.UTF8.GetBytes(response + "\n");
+                    await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ErrorMessages.ErrorHandlingClient);
+            }
+            finally
+            {
+                client.Close();
+                Logger.LogInformation(ErrorMessages.ClientClosedConnection);
+            }
         }
+        private string ProcessCommand(string request)
+        {
+            return $"Processed: {request}";
+        }
+
     }
 }

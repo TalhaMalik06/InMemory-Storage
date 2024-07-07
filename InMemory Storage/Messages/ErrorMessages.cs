@@ -10,5 +10,8 @@ namespace InMemory_Storage.Messages
     {
         public const string TcpSettingNull = "TCP server settings or address cannot be null or empty.";
         public const string TcpPortInvalid = "Invalid TCP server port number.";
+        public const string ErrorAcceptingClient = "Error accepting client connection.";
+        public const string ErrorHandlingClient = "Error handling client.";
+        public const string ClientClosedConnection = "Client connection closed.";
     }
 }

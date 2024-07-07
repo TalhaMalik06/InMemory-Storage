@@ -20,11 +20,7 @@ namespace InMemory_Storage.Services
         {
             Logger.LogInformation("Worker started at: {time}", DateTimeOffset.Now);
             TcpServer.Start();
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                Logger.LogInformation("Worker active at: {time}", DateTimeOffset.Now);
-                await Task.Delay(5000, cancellationToken);
-            }
+            await Task.Delay(Timeout.Infinite, cancellationToken);
             TcpServer.Stop();
             Logger.LogInformation("Worker stopping at: {time}", DateTimeOffset.Now);
         }
