@@ -1,4 +1,5 @@
-﻿using InMemory_Storage.Models;
+﻿using InMemory_Storage.Commands;
+using InMemory_Storage.Models;
 using InMemory_Storage.Server;
 using InMemory_Storage.Services;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ namespace InMemory_Storage
                     services.Configure<TcpServerSettings>(hostContext.Configuration.GetSection("TcpServerSettings"));
                     services.AddHostedService<Worker>();
                     services.AddScoped<ITcpServer, TcpServer>();
+                    services.AddScoped<ICommandFactory, CommandHandlerFactory>();
+                    services.AddScoped<ICommandHandler, SetItemCommandHandler>();
                 });
     }
 }
