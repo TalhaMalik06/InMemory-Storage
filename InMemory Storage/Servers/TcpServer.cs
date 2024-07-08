@@ -1,4 +1,5 @@
-﻿using InMemory_Storage.Messages;
+﻿using InMemory_Storage.Commands;
+using InMemory_Storage.Messages;
 using InMemory_Storage.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,7 +11,7 @@ namespace InMemory_Storage.Server
 {
     public class TcpServer : ITcpServer
     {
-        public TcpServer(ILogger<TcpServer> logger, IOptions<TcpServerSettings> settings)
+        public TcpServer(ILogger<TcpServer> logger, IOptions<TcpServerSettings> settings, ICommandFactory commandFactory)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             if (settings?.Value == null || string.IsNullOrWhiteSpace(settings.Value.Address))
@@ -25,12 +26,13 @@ namespace InMemory_Storage.Server
 
             Listener = new TcpListener(IPAddress.Parse(settings.Value.Address), settings.Value.Port);
             CancellationTokenSource = new CancellationTokenSource();
-
+            CommandFactory = commandFactory ?? throw new ArgumentNullException(nameof(commandFactory));
         }
 
         private readonly ILogger<TcpServer> Logger;
         private readonly TcpListener Listener;
         private readonly CancellationTokenSource CancellationTokenSource;
+        private readonly ICommandFactory CommandFactory;
 
         public void Start()
         {
@@ -76,7 +78,7 @@ namespace InMemory_Storage.Server
                     var byteCount = await stream.ReadAsync(buffer, cancellationToken);
                     if (byteCount <= 0 || cancellationToken.IsCancellationRequested) break;
                     var request = Encoding.UTF8.GetString(buffer, 0, byteCount).Trim();
-                    var response = ProcessCommand(request);
+                    var response = await ProcessCommand(request, cancellationToken);
                     var responseBytes = Encoding.UTF8.GetBytes(response + "\n");
                     await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
                 }
@@ -91,10 +93,13 @@ namespace InMemory_Storage.Server
                 Logger.LogInformation(ErrorMessages.ClientClosedConnection);
             }
         }
-        private string ProcessCommand(string request)
+        private async Task<string> ProcessCommand(string request, CancellationToken cancellationToken)
         {
-            return $"Processed: {request}";
+            var parts = request.Split(' ');
+            var command = parts[0].ToUpper();
+            var commandHandler = CommandFactory.GetCommandHandler(command);
+            return await commandHandler.Handle(request, cancellationToken);
         }
-
     }
+
 }
