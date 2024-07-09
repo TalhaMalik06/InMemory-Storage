@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InMemory_Storage.Messages;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,19 @@ namespace InMemory_Storage.Commands
         IEnumerable<ICommandHandler> Handlers { get; set; }
         public ICommandHandler GetCommandHandler(string commandName)
         {
-            return Handlers.FirstOrDefault(h => h.CanHandle(commandName));
+            if (string.IsNullOrWhiteSpace(commandName))
+            {
+                throw new ArgumentException(ErrorMessages.CommandNameCannotBeNull, nameof(commandName));
+            }
+
+            var handler = Handlers.FirstOrDefault(h => h.CanHandle(commandName));
+
+            if (handler == null)
+            {
+                throw new InvalidOperationException(string.Format(ErrorMessages.NoCommandHandlerFound, commandName));
+            }
+
+            return handler;
         }
     }
 }

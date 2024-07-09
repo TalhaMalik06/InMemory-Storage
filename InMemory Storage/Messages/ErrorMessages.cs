@@ -13,5 +13,7 @@ namespace InMemory_Storage.Messages
         public const string ErrorAcceptingClient = "Error accepting client connection.";
         public const string ErrorHandlingClient = "Error handling client.";
         public const string ClientClosedConnection = "Client connection closed.";
+        public const string CommandNameCannotBeNull = "Command name cannot be null or whitespace.";
+        public const string NoCommandHandlerFound = "No command handler found for command '{0}'";
     }
 }
