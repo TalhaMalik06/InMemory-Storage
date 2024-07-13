@@ -2,6 +2,7 @@
 using InMemory_Storage.Models;
 using InMemory_Storage.Server;
 using InMemory_Storage.Services;
+using InMemory_Storage.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +25,7 @@ namespace InMemory_Storage
                     services.AddScoped<ITcpServer, TcpServer>();
                     services.AddScoped<ICommandFactory, CommandHandlerFactory>();
                     services.AddScoped<ICommandHandler, SetItemCommandHandler>();
+                    services.AddSingleton<IKeyValueStorage, KeyValueStorage>();
                 });
     }
 }
