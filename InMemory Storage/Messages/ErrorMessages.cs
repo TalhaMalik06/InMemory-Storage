@@ -17,5 +17,6 @@ namespace InMemory_Storage.Messages
         public const string NoCommandHandlerFound = "No command handler found for command '{0}'";
         public const string InvalidCommandFormatForSet = "ERROR: Invalid command format. Use: SET <key> <value>";
         public const string FieldCannotBeNullOrEmpty = "Field {0} cannot be null or empty.";
+        public const string InvalidCommandFormatForGet = "ERROR: Invalid command format. Use: GET <key>";
     }
 }

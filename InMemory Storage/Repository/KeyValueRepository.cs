@@ -24,7 +24,13 @@ namespace InMemory_Storage.Repository
 
         public string GetItem(string key)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(key)), nameof(key));
+            }
+
+            return KeyValueStorage.Get(key) ?? "NULL";
+
         }
 
         public void SetItem(string key, string value)

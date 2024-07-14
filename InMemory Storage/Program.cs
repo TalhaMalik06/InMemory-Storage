@@ -1,5 +1,6 @@
 ﻿using InMemory_Storage.Commands;
 using InMemory_Storage.Models;
+using InMemory_Storage.Repository;
 using InMemory_Storage.Server;
 using InMemory_Storage.Services;
 using InMemory_Storage.Storage;
@@ -25,6 +26,9 @@ namespace InMemory_Storage
                     services.AddScoped<ITcpServer, TcpServer>();
                     services.AddScoped<ICommandFactory, CommandHandlerFactory>();
                     services.AddScoped<ICommandHandler, SetItemCommandHandler>();
+                    services.AddScoped<ICommandHandler, GetItemCommandHandler>();
+                    services.AddScoped<ICommandHandler, DeleteItemCommandHandler>();
+                    services.AddScoped<IKeyValueRepository, KeyValueRepository>();
                     services.AddSingleton<IKeyValueStorage, KeyValueStorage>();
                 });
     }
