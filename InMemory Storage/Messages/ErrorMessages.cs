@@ -15,5 +15,7 @@ namespace InMemory_Storage.Messages
         public const string ClientClosedConnection = "Client connection closed.";
         public const string CommandNameCannotBeNull = "Command name cannot be null or whitespace.";
         public const string NoCommandHandlerFound = "No command handler found for command '{0}'";
+        public const string InvalidCommandFormatForSet = "ERROR: Invalid command format. Use: SET <key> <value>";
+        public const string FieldCannotBeNullOrEmpty = "Field {0} cannot be null or empty.";
     }
 }

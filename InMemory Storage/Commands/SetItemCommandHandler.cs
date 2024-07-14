@@ -1,4 +1,6 @@
-﻿using System;
+﻿using InMemory_Storage.Messages;
+using InMemory_Storage.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,12 @@ namespace InMemory_Storage.Commands
 {
     public class SetItemCommandHandler : ICommandHandler
     {
+        public SetItemCommandHandler(IKeyValueRepository keyValueRepository)
+        {
+            KeyValueRepository = keyValueRepository ?? throw new ArgumentNullException(nameof(keyValueRepository));
+        }
+
+        private IKeyValueRepository KeyValueRepository { get; }
         public bool CanHandle(string commandType)
         {
             return commandType.Equals("SET", StringComparison.OrdinalIgnoreCase);
@@ -15,7 +23,18 @@ namespace InMemory_Storage.Commands
 
         public Task<string> Handle(string command, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var parts = command.Split(' ');
+            if (parts.Length < 3)
+            {
+                return Task.FromResult(ErrorMessages.InvalidCommandFormatForSet);
+            }
+
+            var key = parts[1];
+            var value = parts[2];
+
+            KeyValueRepository.SetItem(key, value);
+
+            return Task.FromResult("OK");
         }
     }
 }
