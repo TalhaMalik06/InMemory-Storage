@@ -19,7 +19,12 @@ namespace InMemory_Storage.Repository
 
         public void DeleteItem(string key)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(key)), nameof(key));
+            }
+
+            KeyValueStorage.Delete(key);
         }
 
         public string GetItem(string key)
