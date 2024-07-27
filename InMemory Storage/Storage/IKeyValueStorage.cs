@@ -9,7 +9,7 @@ namespace InMemory_Storage.Storage
     public interface IKeyValueStorage
     {
         public string? Get(string key);
-        public void Set(string key, string value);
+        public void Set(string key, string value, TimeSpan? ttl = null);
         public void Delete(string key);
         public bool ContainsKey(string key);
     }

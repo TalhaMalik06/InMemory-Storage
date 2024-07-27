@@ -26,6 +26,7 @@ namespace InMemory_Storage
                     services.AddScoped<ITcpServer, TcpServer>();
                     services.AddScoped<ICommandFactory, CommandHandlerFactory>();
                     services.AddScoped<ICommandHandler, SetItemCommandHandler>();
+                    services.AddScoped<ICommandHandler, SetWithExpiryCommandHandler>();
                     services.AddScoped<ICommandHandler, GetItemCommandHandler>();
                     services.AddScoped<ICommandHandler, DeleteItemCommandHandler>();
                     services.AddScoped<IKeyValueRepository, KeyValueRepository>();

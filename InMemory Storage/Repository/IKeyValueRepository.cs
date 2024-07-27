@@ -9,7 +9,7 @@ namespace InMemory_Storage.Repository
     public interface IKeyValueRepository
     {
         string GetItem(string key);
-        void SetItem(string key, string value);
+        void SetItem(string key, string value, TimeSpan? ttl = null);
         void DeleteItem(string key);
     }
 }

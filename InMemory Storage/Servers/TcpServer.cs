@@ -3,6 +3,7 @@ using InMemory_Storage.Messages;
 using InMemory_Storage.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -69,10 +70,10 @@ namespace InMemory_Storage.Server
 
         public async Task HandleClientAsync(TcpClient client, CancellationToken cancellationToken)
         {
+            var buffer = new byte[1024];
+            var stream = client.GetStream();
             try
             {
-                var buffer = new byte[1024];
-                var stream = client.GetStream();
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     var byteCount = await stream.ReadAsync(buffer, cancellationToken);
@@ -85,6 +86,8 @@ namespace InMemory_Storage.Server
             }
             catch (Exception ex)
             {
+                var responseBytes = Encoding.UTF8.GetBytes(ex.Message + "\n");
+                await stream.WriteAsync(responseBytes, 0, responseBytes.Length, cancellationToken);
                 Logger.LogError(ex, ErrorMessages.ErrorHandlingClient);
             }
             finally

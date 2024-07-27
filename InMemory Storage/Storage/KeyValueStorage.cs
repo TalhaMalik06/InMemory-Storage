@@ -9,17 +9,26 @@ namespace InMemory_Storage.Storage
 {
     public class KeyValueStorage : IKeyValueStorage
     {
-        private readonly ConcurrentDictionary<string, string> Storage = new();
+        private readonly ConcurrentDictionary<string, (string Value, DateTime? Expiry)> Storage = new();
 
-        public void Set(string key, string value)
+        public void Set(string key, string value, TimeSpan? ttl = null)
         {
-            Storage[key] = value;
+            var expiry = ttl.HasValue ? DateTime.UtcNow.Add(ttl.Value) : (DateTime?)null;
+            Storage[key] = (value, expiry);
         }
 
         public string? Get(string key)
         {
-            Storage.TryGetValue(key, out var value);
-            return value;
+            if (Storage.TryGetValue(key, out var entry))
+            {
+                if (entry.Expiry.HasValue && entry.Expiry.Value <= DateTime.UtcNow)
+                {
+                    Storage.TryRemove(key, out _);
+                    return null;
+                }
+                return entry.Value;
+            }
+            return null;
         }
 
         public void Delete(string key)

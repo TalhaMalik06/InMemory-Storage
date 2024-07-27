@@ -38,7 +38,7 @@ namespace InMemory_Storage.Repository
 
         }
 
-        public void SetItem(string key, string value)
+        public void SetItem(string key, string value, TimeSpan? ttl = null)
         {
             if (string.IsNullOrWhiteSpace(key))
             {
@@ -50,7 +50,7 @@ namespace InMemory_Storage.Repository
                 throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(value)), nameof(value));
             }
 
-            KeyValueStorage.Set(key, value);
+            KeyValueStorage.Set(key, value, ttl);
         }
     }
 }

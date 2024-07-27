@@ -19,5 +19,7 @@ namespace InMemory_Storage.Messages
         public const string FieldCannotBeNullOrEmpty = "Field {0} cannot be null or empty.";
         public const string InvalidCommandFormatForGet = "ERROR: Invalid command format. Use: GET <key>";
         public const string InvalidCommandFormatForDelete = "ERROR: Invalid command format. Use: DELETE <key>";
+        public const string InvalidCommandFormatForSetWithExpiry = "ERROR: Invalid command format. Use: SETEX <key> <ttl> <value>";
+
     }
 }
