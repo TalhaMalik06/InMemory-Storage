@@ -31,6 +31,7 @@ namespace InMemory_Storage
                     services.AddScoped<ICommandHandler, DeleteItemCommandHandler>();
                     services.AddScoped<IKeyValueRepository, KeyValueRepository>();
                     services.AddSingleton<IKeyValueStorage, KeyValueStorage>();
+                    services.AddSingleton<IListRepository, ListRepository>();
                 });
     }
 }
