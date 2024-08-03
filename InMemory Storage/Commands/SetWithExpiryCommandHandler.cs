@@ -31,7 +31,7 @@ namespace InMemory_Storage.Commands
 
             var key = parts[1];
             var value = string.Join(' ', parts.Skip(3));
-            KeyValueRepository.SetItem(key, value, TimeSpan.FromSeconds(ttl));
+            KeyValueRepository.Set(key, value, TimeSpan.FromSeconds(ttl));
 
             return Task.FromResult("OK");
         }

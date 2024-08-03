@@ -32,7 +32,7 @@ namespace InMemory_Storage.Commands
             var key = parts[1];
             var value = parts[2];
 
-            KeyValueRepository.SetItem(key, value);
+            KeyValueRepository.Set(key, value);
 
             return Task.FromResult("OK");
         }

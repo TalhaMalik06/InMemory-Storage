@@ -27,7 +27,7 @@ namespace InMemory_Storage.Commands
 
             var key = parts[1];
 
-            KeyValueRepository.DeleteItem(key);
+            KeyValueRepository.Delete(key);
 
             return Task.FromResult("OK");
 

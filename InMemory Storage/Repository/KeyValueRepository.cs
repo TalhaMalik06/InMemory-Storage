@@ -1,6 +1,5 @@
-﻿using InMemory_Storage.Messages;
-using InMemory_Storage.Storage;
-using System;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,47 +9,36 @@ namespace InMemory_Storage.Repository
 {
     public class KeyValueRepository : IKeyValueRepository
     {
-        public KeyValueRepository(IKeyValueStorage keyValueStorage)
+        private readonly ConcurrentDictionary<string, (string Value, DateTime? Expiry)> Storage = new();
+
+        public void Set(string key, string value, TimeSpan? ttl = null)
         {
-            KeyValueStorage = keyValueStorage ?? throw new ArgumentNullException(nameof(keyValueStorage));
+            var expiry = ttl.HasValue ? DateTime.UtcNow.Add(ttl.Value) : (DateTime?)null;
+            Storage[key] = (value, expiry);
         }
 
-        private IKeyValueStorage KeyValueStorage { get; }
-
-        public void DeleteItem(string key)
+        public string? Get(string key)
         {
-            if (string.IsNullOrWhiteSpace(key))
+            if (Storage.TryGetValue(key, out var entry))
             {
-                throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(key)), nameof(key));
+                if (entry.Expiry.HasValue && entry.Expiry.Value <= DateTime.UtcNow)
+                {
+                    Storage.TryRemove(key, out _);
+                    return null;
+                }
+                return entry.Value;
             }
-
-            KeyValueStorage.Delete(key);
+            return null;
         }
 
-        public string GetItem(string key)
+        public void Delete(string key)
         {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(key)), nameof(key));
-            }
-
-            return KeyValueStorage.Get(key) ?? "NULL";
-
+            Storage.TryRemove(key, out _);
         }
 
-        public void SetItem(string key, string value, TimeSpan? ttl = null)
+        public bool ContainsKey(string key)
         {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(key)), nameof(key));
-            }
-
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new ArgumentException(string.Format(ErrorMessages.FieldCannotBeNullOrEmpty, nameof(value)), nameof(value));
-            }
-
-            KeyValueStorage.Set(key, value, ttl);
+            return Storage.ContainsKey(key);
         }
     }
 }

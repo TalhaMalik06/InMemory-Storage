@@ -4,7 +4,6 @@ using InMemory_Storage.Models;
 using InMemory_Storage.Repository;
 using InMemory_Storage.Server;
 using InMemory_Storage.Services;
-using InMemory_Storage.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,8 +30,7 @@ namespace InMemory_Storage
                     services.AddScoped<ICommandHandler, GetItemCommandHandler>();
                     services.AddScoped<ICommandHandler, DeleteItemCommandHandler>();
                     services.AddScoped<ICommandHandler, LPushCommandHandler>();
-                    services.AddScoped<IKeyValueRepository, KeyValueRepository>();
-                    services.AddSingleton<IKeyValueStorage, KeyValueStorage>();
+                    services.AddSingleton<IKeyValueRepository, KeyValueRepository>();
                     services.AddSingleton<IListRepository, ListRepository>();
                 });
     }

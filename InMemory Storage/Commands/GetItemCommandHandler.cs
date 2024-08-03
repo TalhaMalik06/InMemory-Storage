@@ -31,7 +31,7 @@ namespace InMemory_Storage.Commands
                 }
 
                 var key = parts[1];
-                var value = KeyValueRepository.GetItem(key);
+                var value = KeyValueRepository.Get(key);
 
                 return Task.FromResult(value);
             }
