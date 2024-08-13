@@ -8,12 +8,12 @@ namespace InMemory_Storage.Commands.ListCommands
 {
     public class LPopCommandHandler : ICommandHandler
     {
-        private readonly IListRepository _storage;
-
         public LPopCommandHandler(IListRepository storage)
         {
-            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
+            Storage = storage ?? throw new ArgumentNullException(nameof(storage));
         }
+
+        private readonly IListRepository Storage;
 
         public bool CanHandle(string commandType)
         {
@@ -30,7 +30,7 @@ namespace InMemory_Storage.Commands.ListCommands
             }
 
             var key = parts[1];
-            var result = await _storage.LPopAsync(key);
+            var result = await Storage.LPopAsync(key);
 
             if (result == null)
             {
