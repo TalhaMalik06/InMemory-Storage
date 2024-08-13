@@ -22,6 +22,7 @@ namespace InMemory_Storage.Messages
         public const string InvalidCommandFormatForSetWithExpiry = "ERROR: Invalid command format. Use: SETEX <key> <ttl> <value>";
         public const string InvalidCommandFormatForLpush = "ERROR: Invalid command format. Use: LPUSH <key> <value> [value ...]";
         public const string InvalidCommandFormatForRpush = "ERROR: Invalid command format. Use: RPUSH <key> <value> [value ...]";
+        public const string InvalidCommandFormatForLpop = "ERROR: Invalid command format. Use: LPOP <key>";
 
     }
 }
