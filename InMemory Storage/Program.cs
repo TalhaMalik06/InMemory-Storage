@@ -33,6 +33,7 @@ namespace InMemory_Storage
                     services.AddScoped<ICommandHandler, RPushCommandHandler>();
                     services.AddScoped<ICommandHandler, LPopCommandHandler>();
                     services.AddScoped<ICommandHandler, RPopCommandHandler>();
+                    services.AddScoped<ICommandHandler, LRangeCommandHandler>();
                     services.AddSingleton<IKeyValueRepository, KeyValueRepository>();
                     services.AddSingleton<IListRepository, ListRepository>();
                 });

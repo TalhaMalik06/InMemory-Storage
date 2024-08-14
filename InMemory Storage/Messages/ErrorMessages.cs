@@ -24,6 +24,8 @@ namespace InMemory_Storage.Messages
         public const string InvalidCommandFormatForRpush = "ERROR: Invalid command format. Use: RPUSH <key> <value> [value ...]";
         public const string InvalidCommandFormatForLpop = "ERROR: Invalid command format. Use: LPOP <key>";
         public const string InvalidCommandFormatForRpop = "ERROR: Invalid command format. Use: RPOP <key>";
+        public const string InvalidCommandFormatForLrange = "ERROR: Invalid command format. Use: LRANGE <key> <start> <stop>";
+        public const string InvalidRangeFormat = "ERROR: Invalid range format. <start> and <stop> must be integers.";
 
     }
 }
