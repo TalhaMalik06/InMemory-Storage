@@ -1,4 +1,5 @@
-﻿using InMemory_Storage.Messages;
+﻿using InMemory_Storage.Exceptions;
+using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace InMemory_Storage.Commands.ListCommands
 
             if (parts.Length < 3)
             {
-                return await Task.FromResult(ErrorMessages.InvalidCommandFormatForLpush);
+                throw new CommandFormatException(ErrorMessages.InvalidCommandFormatForLpush);
             }
             var key = parts[1];
             var values = parts.Skip(2).ToArray();

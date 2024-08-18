@@ -1,4 +1,5 @@
-﻿using InMemory_Storage.Messages;
+﻿using InMemory_Storage.Exceptions;
+using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
 using System;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace InMemory_Storage.Commands.ListCommands
 
             if (parts.Length != 2)
             {
-                return ErrorMessages.InvalidCommandFormatForLLen;
+                throw new CommandFormatException(ErrorMessages.InvalidCommandFormatForLLen);
             }
 
             var key = parts[1];

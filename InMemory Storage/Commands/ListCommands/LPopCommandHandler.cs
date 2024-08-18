@@ -1,8 +1,10 @@
-﻿using InMemory_Storage.Messages;
+﻿using InMemory_Storage.Exceptions;
+using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using KeyNotFoundException = InMemory_Storage.Exceptions.KeyNotFoundException;
 
 namespace InMemory_Storage.Commands.ListCommands
 {
@@ -26,7 +28,7 @@ namespace InMemory_Storage.Commands.ListCommands
 
             if (parts.Length != 2)
             {
-                return await Task.FromResult(ErrorMessages.InvalidCommandFormatForLpop);
+                throw new CommandFormatException(ErrorMessages.InvalidCommandFormatForLpop);
             }
 
             var key = parts[1];
@@ -34,7 +36,7 @@ namespace InMemory_Storage.Commands.ListCommands
 
             if (result == null)
             {
-                return "ERROR: The list is empty or does not exist.";
+                throw new KeyNotFoundException(ErrorMessages.ListEmptyOrDoesNotExists);
             }
 
             return result;

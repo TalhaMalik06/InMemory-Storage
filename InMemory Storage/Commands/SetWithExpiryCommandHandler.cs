@@ -1,4 +1,5 @@
-﻿using InMemory_Storage.Messages;
+﻿using InMemory_Storage.Exceptions;
+using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace InMemory_Storage.Commands
             var parts = command.Split(' ');
             if (parts.Length < 4 || !int.TryParse(parts[2], out var ttl))
             {
-                return Task.FromResult(ErrorMessages.InvalidCommandFormatForSetWithExpiry);
+                throw new CommandFormatException(ErrorMessages.InvalidCommandFormatForSetWithExpiry);
             }
 
             var key = parts[1];

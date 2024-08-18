@@ -1,4 +1,5 @@
-﻿using InMemory_Storage.Messages;
+﻿using InMemory_Storage.Exceptions;
+using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
 
 namespace InMemory_Storage.Commands
@@ -22,7 +23,7 @@ namespace InMemory_Storage.Commands
             var parts = command.Split(' ');
             if (parts.Length < 2)
             {
-                return Task.FromResult(ErrorMessages.InvalidCommandFormatForDelete);
+                throw new CommandFormatException(ErrorMessages.InvalidCommandFormatForDelete);
             }
 
             var key = parts[1];

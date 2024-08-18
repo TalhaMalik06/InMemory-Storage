@@ -27,6 +27,6 @@ namespace InMemory_Storage.Messages
         public const string InvalidCommandFormatForLrange = "ERROR: Invalid command format. Use: LRANGE <key> <start> <stop>";
         public const string InvalidRangeFormat = "ERROR: Invalid range format. <start> and <stop> must be integers.";
         public const string InvalidCommandFormatForLLen = "ERROR: Invalid command format. Use: LLEN <key>";
-
+        public const string ListEmptyOrDoesNotExists = "ERROR: The list is empty or does not exist.";
     }
 }
