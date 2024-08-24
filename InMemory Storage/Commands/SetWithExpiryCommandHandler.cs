@@ -1,11 +1,6 @@
 ﻿using InMemory_Storage.Exceptions;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InMemory_Storage.Commands
 {
@@ -22,7 +17,7 @@ namespace InMemory_Storage.Commands
             return commandType.Equals("SETEX", StringComparison.OrdinalIgnoreCase);
         }
 
-        public Task<string> Handle(string command, CancellationToken cancellationToken)
+        public async Task<string> Handle(string command, CancellationToken cancellationToken)
         {
             var parts = command.Split(' ');
             if (parts.Length < 4 || !int.TryParse(parts[2], out var ttl))
@@ -32,9 +27,9 @@ namespace InMemory_Storage.Commands
 
             var key = parts[1];
             var value = string.Join(' ', parts.Skip(3));
-            KeyValueRepository.Set(key, value, TimeSpan.FromSeconds(ttl));
+            await Task.Run(() => KeyValueRepository.Set(key, value, TimeSpan.FromSeconds(ttl)), cancellationToken);
 
-            return Task.FromResult("OK");
+            return ResponseMessages.SuccessCode;
         }
     }
 }

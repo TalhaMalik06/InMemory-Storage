@@ -8,12 +8,12 @@ namespace InMemory_Storage.Repository
 {
     public interface IListRepository
     {
-        Task<string> LPushAsync(string key, params string[] values);
-        Task<string> RPushAsync(string key, params string[] values);
-        Task<string> LPopAsync(string key);
-        Task<string> RPopAsync(string key);
-        Task<IEnumerable<string>> LRangeAsync(string key, int start, int stop);
-        Task<int> LLenAsync(string key);
+        void LPush(string key, params string[] values);
+        void RPush(string key, params string[] values);
+        string LPop(string key);
+        string RPop(string key);
+        IEnumerable<string> LRange(string key, int start, int stop);
+        int LLen(string key);
     }
 
 }

@@ -1,10 +1,6 @@
 ﻿using InMemory_Storage.Exceptions;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace InMemory_Storage.Commands.ListCommands
 {
@@ -32,8 +28,7 @@ namespace InMemory_Storage.Commands.ListCommands
             }
 
             var key = parts[1];
-
-            var length = await Storage.LLenAsync(key);
+            var length = await Task.Run(() => Storage.LLen(key), cancellationToken);
 
             return length.ToString();
         }

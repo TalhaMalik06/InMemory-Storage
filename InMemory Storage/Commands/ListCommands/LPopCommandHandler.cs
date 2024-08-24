@@ -1,9 +1,6 @@
 ﻿using InMemory_Storage.Exceptions;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using KeyNotFoundException = InMemory_Storage.Exceptions.KeyNotFoundException;
 
 namespace InMemory_Storage.Commands.ListCommands
@@ -32,14 +29,9 @@ namespace InMemory_Storage.Commands.ListCommands
             }
 
             var key = parts[1];
-            var result = await Storage.LPopAsync(key);
+            var result = await Task.Run(() => Storage.LPop(key), cancellationToken);
 
-            if (result == null)
-            {
-                throw new KeyNotFoundException(ErrorMessages.ListEmptyOrDoesNotExists);
-            }
-
-            return result;
+            return result ?? throw new KeyNotFoundException(ErrorMessages.ListEmptyOrDoesNotExists);
         }
     }
 }

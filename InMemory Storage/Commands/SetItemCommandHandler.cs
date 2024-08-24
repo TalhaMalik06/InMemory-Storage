@@ -1,11 +1,6 @@
 ﻿using InMemory_Storage.Exceptions;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InMemory_Storage.Commands
 {
@@ -22,7 +17,7 @@ namespace InMemory_Storage.Commands
             return commandType.Equals("SET", StringComparison.OrdinalIgnoreCase);
         }
 
-        public Task<string> Handle(string command, CancellationToken cancellationToken)
+        public async Task<string> Handle(string command, CancellationToken cancellationToken)
         {
             var parts = command.Split(' ');
             if (parts.Length < 3)
@@ -32,10 +27,9 @@ namespace InMemory_Storage.Commands
 
             var key = parts[1];
             var value = parts[2];
+            await Task.Run(() => KeyValueRepository.Set(key, value), cancellationToken);
 
-            KeyValueRepository.Set(key, value);
-
-            return Task.FromResult("OK");
+            return ResponseMessages.SuccessCode;
         }
     }
 }

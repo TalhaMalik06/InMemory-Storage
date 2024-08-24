@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 namespace InMemory_Storage.Repository
 {
@@ -17,18 +12,18 @@ namespace InMemory_Storage.Repository
             Storage[key] = (value, expiry);
         }
 
-        public string? Get(string key)
+        public string Get(string key)
         {
             if (Storage.TryGetValue(key, out var entry))
             {
                 if (entry.Expiry.HasValue && entry.Expiry.Value <= DateTime.UtcNow)
                 {
                     Storage.TryRemove(key, out _);
-                    return null;
+                    return string.Empty;
                 }
                 return entry.Value;
             }
-            return null;
+            return string.Empty;
         }
 
         public void Delete(string key)

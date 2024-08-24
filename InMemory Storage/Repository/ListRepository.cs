@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 namespace InMemory_Storage.Repository
 {
@@ -11,27 +6,25 @@ namespace InMemory_Storage.Repository
     {
         private readonly ConcurrentDictionary<string, List<string>> Lists = new();
 
-        public Task<string> LPushAsync(string key, params string[] values)
+        public void LPush(string key, params string[] values)
         {
             var list = Lists.GetOrAdd(key, _ => new List<string>());
             lock (list)
             {
                 list.InsertRange(0, values);
             }
-            return Task.FromResult("OK");
         }
 
-        public Task<string> RPushAsync(string key, params string[] values)
+        public void RPush(string key, params string[] values)
         {
             var list = Lists.GetOrAdd(key, _ => new List<string>());
             lock (list)
             {
                 list.AddRange(values);
             }
-            return Task.FromResult("OK");
         }
 
-        public Task<string> LPopAsync(string key)
+        public string LPop(string key)
         {
             if (Lists.TryGetValue(key, out var list))
             {
@@ -41,14 +34,14 @@ namespace InMemory_Storage.Repository
                     {
                         var value = list[0];
                         list.RemoveAt(0);
-                        return Task.FromResult(value);
+                        return value;
                     }
                 }
             }
-            return Task.FromResult<string>(null);
+            return string.Empty;
         }
 
-        public Task<string> RPopAsync(string key)
+        public string RPop(string key)
         {
             if (Lists.TryGetValue(key, out var list))
             {
@@ -58,14 +51,14 @@ namespace InMemory_Storage.Repository
                     {
                         var value = list[list.Count - 1];
                         list.RemoveAt(list.Count - 1);
-                        return Task.FromResult(value);
+                        return value;
                     }
                 }
             }
-            return Task.FromResult<string>(null);
+            return string.Empty;
         }
 
-        public Task<IEnumerable<string>> LRangeAsync(string key, int start, int stop)
+        public IEnumerable<string> LRange(string key, int start, int stop)
         {
             if (Lists.TryGetValue(key, out var list))
             {
@@ -73,22 +66,22 @@ namespace InMemory_Storage.Repository
                 {
                     start = Math.Max(start, 0);
                     stop = Math.Min(stop, list.Count - 1);
-                    return Task.FromResult(list.Skip(start).Take(stop - start + 1).AsEnumerable());
+                    return list.Skip(start).Take(stop - start + 1).AsEnumerable();
                 }
             }
-            return Task.FromResult<IEnumerable<string>>(Array.Empty<string>());
+            return Array.Empty<string>();
         }
 
-        public Task<int> LLenAsync(string key)
+        public int LLen(string key)
         {
             if (Lists.TryGetValue(key, out var list))
             {
                 lock (list)
                 {
-                    return Task.FromResult(list.Count);
+                    return list.Count;
                 }
             }
-            return Task.FromResult(0);
+            return 0;
         }
     }
 }

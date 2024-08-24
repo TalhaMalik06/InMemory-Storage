@@ -8,7 +8,7 @@ namespace InMemory_Storage.Repository
 {
     public interface IKeyValueRepository
     {
-        public string? Get(string key);
+        public string Get(string key);
         public void Set(string key, string value, TimeSpan? ttl = null);
         public void Delete(string key);
         public bool ContainsKey(string key);

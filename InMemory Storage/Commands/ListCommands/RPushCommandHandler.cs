@@ -1,10 +1,6 @@
 ﻿using InMemory_Storage.Exceptions;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace InMemory_Storage.Commands.ListCommands
 {
@@ -33,10 +29,9 @@ namespace InMemory_Storage.Commands.ListCommands
 
             var key = parts[1];
             var values = parts.Skip(2).ToArray();
+            await Task.Run(() => Storage.RPush(key, values), cancellationToken);
 
-            var result = await Storage.RPushAsync(key, values);
-
-            return result;
+            return ResponseMessages.SuccessCode;
         }
     }
 }

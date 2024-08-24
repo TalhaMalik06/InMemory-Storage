@@ -1,11 +1,6 @@
 ﻿using InMemory_Storage.Exceptions;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Repository;
-using System;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace InMemory_Storage.Commands.ListCommands
 {
@@ -39,12 +34,13 @@ namespace InMemory_Storage.Commands.ListCommands
                 return ErrorMessages.InvalidRangeFormat;
             }
 
-            var items = await Storage.LRangeAsync(key, start, stop);
+            var items = await Task.Run(() => Storage.LRange(key, start, stop), cancellationToken);
             if (items.Any())
             {
-                return string.Join("\n", items);
+                return string.Join(",", items);
             }
-            return "EMPTY";
+
+            return ResponseMessages.EmptyCode;
         }
     }
 }
