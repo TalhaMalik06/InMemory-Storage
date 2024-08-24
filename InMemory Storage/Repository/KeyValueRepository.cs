@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using static System.Formats.Asn1.AsnWriter;
 
 namespace InMemory_Storage.Repository
 {
@@ -34,6 +35,20 @@ namespace InMemory_Storage.Repository
         public bool ContainsKey(string key)
         {
             return Storage.ContainsKey(key);
+        }
+
+        public Dictionary<string, (string Value, DateTime? Expiry)> GetAllData()
+        {
+            return new Dictionary<string, (string Value, DateTime? Expiry)>(Storage);
+        }
+
+        public void RestoreData(Dictionary<string, (string Value, DateTime? Expiry)> data)
+        {
+            Storage.Clear();
+            foreach (var kvp in data)
+            {
+                Storage[kvp.Key] = kvp.Value;
+            }
         }
     }
 }

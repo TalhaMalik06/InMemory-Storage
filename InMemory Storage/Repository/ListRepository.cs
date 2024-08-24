@@ -83,5 +83,19 @@ namespace InMemory_Storage.Repository
             }
             return 0;
         }
+
+        public Dictionary<string, List<string>> GetAllData()
+        {
+            return new Dictionary<string, List<string>>(Lists.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList()));
+        }
+
+        public void RestoreData(Dictionary<string, List<string>> data)
+        {
+            Lists.Clear();
+            foreach (var kvp in data)
+            {
+                Lists[kvp.Key] = kvp.Value;
+            }
+        }
     }
 }

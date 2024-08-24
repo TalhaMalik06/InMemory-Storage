@@ -12,5 +12,7 @@ namespace InMemory_Storage.Repository
         public void Set(string key, string value, TimeSpan? ttl = null);
         public void Delete(string key);
         public bool ContainsKey(string key);
+        Dictionary<string, (string Value, DateTime? Expiry)> GetAllData();
+        void RestoreData(Dictionary<string, (string Value, DateTime? Expiry)> data);
     }
 }

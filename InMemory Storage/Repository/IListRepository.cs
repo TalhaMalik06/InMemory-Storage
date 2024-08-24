@@ -14,6 +14,8 @@ namespace InMemory_Storage.Repository
         string RPop(string key);
         IEnumerable<string> LRange(string key, int start, int stop);
         int LLen(string key);
+        Dictionary<string, List<string>> GetAllData();
+        void RestoreData(Dictionary<string, List<string>> data);
     }
 
 }
