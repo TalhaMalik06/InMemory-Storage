@@ -1,6 +1,7 @@
 ﻿using InMemory_Storage.Commands;
 using InMemory_Storage.Messages;
 using InMemory_Storage.Models;
+using InMemory_Storage.Persistence;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.IO;
@@ -12,7 +13,7 @@ namespace InMemory_Storage.Server
 {
     public class TcpServer : ITcpServer
     {
-        public TcpServer(ILogger<TcpServer> logger, IOptions<TcpServerSettings> settings, ICommandFactory commandFactory)
+        public TcpServer(ILogger<TcpServer> logger, IOptions<TcpServerSettings> settings, ICommandFactory commandFactory, ISnapshotManager snapshotManager)
         {
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             if (settings?.Value == null || string.IsNullOrWhiteSpace(settings.Value.Address))
@@ -28,12 +29,15 @@ namespace InMemory_Storage.Server
             Listener = new TcpListener(IPAddress.Parse(settings.Value.Address), settings.Value.Port);
             CancellationTokenSource = new CancellationTokenSource();
             CommandFactory = commandFactory ?? throw new ArgumentNullException(nameof(commandFactory));
+            SnapshotManager = snapshotManager ?? throw new ArgumentNullException(nameof(snapshotManager));
+            SnapshotManager.RestoreFromSnapshot();
         }
 
         private readonly ILogger<TcpServer> Logger;
         private readonly TcpListener Listener;
         private readonly CancellationTokenSource CancellationTokenSource;
         private readonly ICommandFactory CommandFactory;
+        private readonly ISnapshotManager SnapshotManager;
 
         public void Start()
         {
@@ -41,10 +45,11 @@ namespace InMemory_Storage.Server
             Logger.LogInformation("TCP listener {address} started at: {time}", Listener.LocalEndpoint ,DateTimeOffset.Now);
             AcceptClientAsync(CancellationTokenSource.Token);
         }
-        public void Stop()
+        public async void Stop()
         {
             CancellationTokenSource.Cancel();
             Listener.Stop();
+            await SnapshotManager.CreateSnapshot();
             Logger.LogInformation("TCP listener {address} stopped at: {time}", Listener.LocalEndpoint, DateTimeOffset.Now);
         }
 
@@ -81,6 +86,7 @@ namespace InMemory_Storage.Server
                     var request = Encoding.UTF8.GetString(buffer, 0, byteCount).Trim();
                     var response = await ProcessCommand(request, cancellationToken);
                     var responseBytes = Encoding.UTF8.GetBytes(response + "\n");
+                    await SnapshotManager.CreateSnapshot();
                     await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
                 }
             }

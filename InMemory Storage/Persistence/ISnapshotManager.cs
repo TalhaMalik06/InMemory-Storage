@@ -8,8 +8,8 @@ namespace InMemory_Storage.Persistence
 {
     public interface ISnapshotManager
     {
-        void SnapshotCallback(object state);
-        void CreateSnapshot();
-        void RestoreFromRestore();
+        void SnapshotCallback(object? state);
+        Task CreateSnapshot();
+        Task RestoreFromSnapshot();
     }
 }

@@ -1,16 +1,16 @@
-﻿using System.Collections.Concurrent;
-using static System.Formats.Asn1.AsnWriter;
+﻿using InMemory_Storage.Models;
+using System.Collections.Concurrent;
 
 namespace InMemory_Storage.Repository
 {
     public class KeyValueRepository : IKeyValueRepository
     {
-        private readonly ConcurrentDictionary<string, (string Value, DateTime? Expiry)> Storage = new();
+        private readonly ConcurrentDictionary<string, ValueWithExpiry> Storage = new();
 
         public void Set(string key, string value, TimeSpan? ttl = null)
         {
             var expiry = ttl.HasValue ? DateTime.UtcNow.Add(ttl.Value) : (DateTime?)null;
-            Storage[key] = (value, expiry);
+            Storage[key] = new (value, expiry);
         }
 
         public string Get(string key)
@@ -37,12 +37,12 @@ namespace InMemory_Storage.Repository
             return Storage.ContainsKey(key);
         }
 
-        public Dictionary<string, (string Value, DateTime? Expiry)> GetAllData()
+        public Dictionary<string, ValueWithExpiry> GetAllData()
         {
-            return new Dictionary<string, (string Value, DateTime? Expiry)>(Storage);
+            return new Dictionary<string, ValueWithExpiry>(Storage);
         }
 
-        public void RestoreData(Dictionary<string, (string Value, DateTime? Expiry)> data)
+        public void RestoreData(Dictionary<string, ValueWithExpiry> data)
         {
             Storage.Clear();
             foreach (var kvp in data)

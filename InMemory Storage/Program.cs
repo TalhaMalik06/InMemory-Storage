@@ -1,6 +1,7 @@
 ﻿using InMemory_Storage.Commands;
 using InMemory_Storage.Commands.ListCommands;
 using InMemory_Storage.Models;
+using InMemory_Storage.Persistence;
 using InMemory_Storage.Repository;
 using InMemory_Storage.Server;
 using InMemory_Storage.Services;
@@ -22,6 +23,7 @@ namespace InMemory_Storage
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.Configure<TcpServerSettings>(hostContext.Configuration.GetSection("TcpServerSettings"));
+                    services.Configure<PersitenceSettings>(hostContext.Configuration.GetSection("PersitenceSettings"));
                     services.AddHostedService<Worker>();
                     services.AddScoped<ITcpServer, TcpServer>();
                     services.AddScoped<ICommandFactory, CommandHandlerFactory>();
@@ -37,6 +39,7 @@ namespace InMemory_Storage
                     services.AddScoped<ICommandHandler, LLenCommandHandler>();
                     services.AddSingleton<IKeyValueRepository, KeyValueRepository>();
                     services.AddSingleton<IListRepository, ListRepository>();
+                    services.AddSingleton<ISnapshotManager, SnapshotManager>();
                 });
     }
 }
