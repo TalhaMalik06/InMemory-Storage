@@ -17,7 +17,7 @@ namespace InMemory_Storage.Commands
             return commandType.Equals("GET", StringComparison.OrdinalIgnoreCase);
         }
 
-        public async Task<string> Handle(string command, CancellationToken cancellationToken)
+        public Task<string> Handle(string command, CancellationToken cancellationToken)
         {
             {
                 var parts = command.Split(' ');
@@ -27,9 +27,9 @@ namespace InMemory_Storage.Commands
                 }
 
                 var key = parts[1];
-                var value = await Task.Run(() => KeyValueRepository.Get(key), cancellationToken);
+                var value = KeyValueRepository.Get(key);
 
-                return value;
+                return Task.FromResult(value);
             }
         }
     }
