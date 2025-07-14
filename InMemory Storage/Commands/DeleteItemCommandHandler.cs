@@ -18,7 +18,7 @@ namespace InMemory_Storage.Commands
             return commandType.Equals("DELETE", StringComparison.OrdinalIgnoreCase);
         }
 
-        public async Task<string> Handle(string command, CancellationToken cancellationToken)
+        public Task<string> Handle(string command, CancellationToken cancellationToken)
         {
             var parts = command.Split(' ');
             if (parts.Length < 2)
@@ -27,9 +27,9 @@ namespace InMemory_Storage.Commands
             }
 
             var key = parts[1];
-            await Task.Run(() => KeyValueRepository.Delete(key), cancellationToken);
+            KeyValueRepository.Delete(key);
 
-            return ResponseMessages.SuccessCode;
+            return Task.FromResult(ResponseMessages.SuccessCode);
 
         }
     }
