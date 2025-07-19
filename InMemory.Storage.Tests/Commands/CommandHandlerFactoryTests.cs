@@ -23,7 +23,8 @@ namespace InMemory.Storage.Tests.Commands
 
             // Act & Assert
             var exception = Assert.Throws<ArgumentException>(() => factory.GetCommandHandler(null!));
-            Assert.Equal(ErrorMessages.CommandNameCannotBeNull, exception.Message);
+            Assert.StartsWith(ErrorMessages.CommandNameCannotBeNull, exception.Message);
+            Assert.Equal("commandName", exception.ParamName);
         }
 
         [Fact]
@@ -35,7 +36,8 @@ namespace InMemory.Storage.Tests.Commands
 
             // Act & Assert
             var exception = Assert.Throws<ArgumentException>(() => factory.GetCommandHandler(string.Empty));
-            Assert.Equal(ErrorMessages.CommandNameCannotBeNull, exception.Message);
+            Assert.StartsWith(ErrorMessages.CommandNameCannotBeNull, exception.Message);
+            Assert.Equal("commandName", exception.ParamName);
         }
 
         [Fact]
@@ -47,7 +49,8 @@ namespace InMemory.Storage.Tests.Commands
 
             // Act & Assert
             var exception = Assert.Throws<ArgumentException>(() => factory.GetCommandHandler("   "));
-            Assert.Equal(ErrorMessages.CommandNameCannotBeNull, exception.Message);
+            Assert.StartsWith(ErrorMessages.CommandNameCannotBeNull, exception.Message);
+            Assert.Equal("commandName", exception.ParamName);
         }
 
         [Fact]
