@@ -64,8 +64,24 @@ namespace InMemory_Storage.Repository
             {
                 lock (list)
                 {
+                    if (start < 0)
+                    {
+                        start = list.Count + start;
+                    }
+
+                    if (stop < 0)
+                    {
+                        stop = list.Count + stop;
+                    }
+
                     start = Math.Max(start, 0);
                     stop = Math.Min(stop, list.Count - 1);
+
+                    if (start > stop)
+                    {
+                        return Array.Empty<string>();
+                    }
+
                     return list.Skip(start).Take(stop - start + 1).AsEnumerable();
                 }
             }
